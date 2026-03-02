@@ -1,0 +1,10 @@
+export const APP_NAME = "TaskManager";
+export const APP_VERSION = "1.0.0";
+export const DEFAULT_PAGE_SIZE = 20;
+export const MAX_PAGE_SIZE = 100;
+export const DEFAULT_SORT_ORDER = "desc";
+export const SUPPORTED_SORT_FIELDS = ["createdAt", "updatedAt", "title", "priority"] as const;
+export const TASK_STATUSES = ["pending", "in_progress", "completed", "cancelled"] as const;
+export const TASK_PRIORITIES = ["low", "medium", "high", "critical"] as const;
+export const API_PREFIX = "/api";
+export const HEALTH_CHECK_PATH = "/health";
