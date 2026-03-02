@@ -3,6 +3,7 @@ import { config } from "dotenv";
 import { authRouter } from "./routes/auth";
 import { tasksRouter } from "./routes/tasks";
 import { usersRouter } from "./routes/users";
+import { commentsRouter } from "./routes/comments";
 import { errorHandler } from "./middleware/error-handler";
 import { authMiddleware } from "./middleware/auth";
 
@@ -21,6 +22,7 @@ app.use("/api/auth", authRouter);
 
 // Protected routes
 app.use("/api/tasks", authMiddleware, tasksRouter);
+app.use("/api/tasks/:taskId/comments", authMiddleware, commentsRouter);
 app.use("/api/users", authMiddleware, usersRouter);
 
 // Error handling
