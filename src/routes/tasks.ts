@@ -4,8 +4,12 @@ import { query } from "../db/connection";
 import { validate } from "../middleware/validate";
 import { AuthRequest } from "../middleware/auth";
 import { AppError } from "../middleware/error-handler";
+import { sanitizeQuery, validateNumericParams } from "../middleware/sanitize";
 
 export const tasksRouter = Router();
+
+// Apply sanitization to all task routes
+tasksRouter.use(sanitizeQuery);
 
 const createTaskSchema = z.object({
   title: z.string().min(1).max(500),
@@ -59,7 +63,7 @@ tasksRouter.get("/", async (req: AuthRequest, res) => {
   res.json({ tasks: result.rows, page: Number(page), limit: Number(limit) });
 });
 
-tasksRouter.get("/:id", async (req: AuthRequest, res) => {
+tasksRouter.get("/:id", validateNumericParams("id"), async (req: AuthRequest, res) => {
   const result = await query(
     `SELECT t.*, u.name as assigned_to_name
      FROM tasks t
@@ -88,7 +92,7 @@ tasksRouter.post("/", validate(createTaskSchema), async (req: AuthRequest, res) 
   res.status(201).json(result.rows[0]);
 });
 
-tasksRouter.put("/:id", validate(updateTaskSchema), async (req: AuthRequest, res) => {
+tasksRouter.put("/:id", validateNumericParams("id"), validate(updateTaskSchema), async (req: AuthRequest, res) => {
   const updates: string[] = [];
   const params: unknown[] = [];
   let paramIndex = 1;
@@ -115,7 +119,7 @@ tasksRouter.put("/:id", validate(updateTaskSchema), async (req: AuthRequest, res
   res.json(result.rows[0]);
 });
 
-tasksRouter.delete("/:id", async (req: AuthRequest, res) => {
+tasksRouter.delete("/:id", validateNumericParams("id"), async (req: AuthRequest, res) => {
   const result = await query("DELETE FROM tasks WHERE id = $1 RETURNING id", [
     req.params.id,
   ]);
